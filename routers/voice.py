@@ -12,8 +12,8 @@ async def voice():
 
 @router.put('/{user_id}', tags=["voice"])
 async def clone_voice(user_id: str, audio_path: str):
-    Clone.clone_voice(user_id, audio_path)
-    return {"result": "success"}
+    (_, name) = Clone.clone_voice(user_id, audio_path)
+    return {"result": name}
 
 
 @router.get('/{user_id}/speech', tags=["voice"])

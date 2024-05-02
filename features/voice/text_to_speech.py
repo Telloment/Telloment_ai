@@ -7,7 +7,7 @@ from features.voice import env_vars
 
 
 def text_to_speech(key: str, text: str, language: str = 'KR'):
-    target_se = torch.load(f'../OpenVoice/checkpoints_v2/base_speakers/ses/{key}.pth', map_location=device)
+    target_se = torch.load(f'OpenVoice/checkpoints_v2/base_speakers/ses/{key}.pth', map_location=env_vars.device)
     speed = 1.0
     model = TTS(language=language, device=env_vars.device)
     speaker_ids = model.hps.data.spk2id
