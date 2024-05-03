@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, BackgroundTasks
 import features.voice.clone_voice as Clone
 import features.voice.text_to_speech as TTS
 
@@ -10,10 +10,10 @@ async def voice():
     return {"message": "Voice API"}
 
 
-@router.put('/{user_id}', tags=["voice"])
-async def clone_voice(user_id: str, audio_path: str):
-    (_, name) = Clone.clone_voice(user_id, audio_path)
-    return {"result": name}
+@router.put('/{user_id}', tags=["voice"], status_code=202)
+async def clone_voice(user_id: str, audio_path: str, background_tasks: BackgroundTasks):
+    background_tasks.add_task(Clone.clone_voice, user_id=user_id, audio_path=audio_path)
+    return {"result": "accepted"}
 
 
 @router.get('/{user_id}/speech', tags=["voice"])
