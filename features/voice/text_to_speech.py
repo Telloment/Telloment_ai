@@ -1,27 +1,27 @@
 import os
 
 import torch
-from melo.api import TTS
 
 from features.voice import env_vars
+from features.voice import TTSModel
 
 
-def text_to_speech(key: str, text: str, language: str = 'KR'):
-    target_se = torch.load(f'OpenVoice/checkpoints_v2/base_speakers/ses/{key}.pth', map_location=env_vars.device)
-    speed = 1.0
-    model = TTS(language=language, device=env_vars.device)
-    speaker_ids = model.hps.data.spk2id
+def text_to_speech(user_id: str, key: str, text: str):
+    if not os.path.exists(env_vars.output_dir):
+        os.makedirs(env_vars.output_dir, exist_ok=True)
+
+
+    target_se = torch.load(f'processed/demo_speaker2_v2_{key}/se.pth', map_location=env_vars.device)
+
     # Convert the hash value to base64 and make file name possible
     src_path = f'{env_vars.output_dir}/tmp.wav'
-    speaker_key = 'KR'
-    speaker_id = speaker_ids[speaker_key]
 
     try:
-        speaker_key = speaker_key.lower().replace('_', '-')
+        TTSModel.TTS_speecht5(text, src_path)
 
-        model.tts_to_file(text, speaker_id, src_path, speed=speed)
-        save_path = f'{env_vars.output_dir}/output_v2_{speaker_key}.wav'
-
+        save_path = f'{env_vars.output_dir}/output_v2_kr.wav'
+        #save to save path
+        # os.rename(src_path, save_path)
         # Run the tone color converter
         encode_message = "@MyShell"
         env_vars.tone_color_converter.convert(
@@ -31,4 +31,5 @@ def text_to_speech(key: str, text: str, language: str = 'KR'):
             output_path=save_path,
             message=encode_message)
     finally:
-        os.remove(src_path)
+        if os.path.exists(src_path):
+            os.remove(src_path)
