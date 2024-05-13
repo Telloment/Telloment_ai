@@ -4,6 +4,7 @@ from models.BERTDataset import BERTDataset
 from torch.utils.data import DataLoader
 import numpy as np
 import torch
+from models.BERTClassifier import BERTClassifier
 
 tok = tokenizer.tokenize
 max_len = 64
