@@ -17,7 +17,7 @@ def _get_classifier() -> BertModel:
     return model
 
 
-classifier: BertModel = _get_classifier()
+classifier = _get_classifier()
 
 
 def _predict(predict_sentence):
