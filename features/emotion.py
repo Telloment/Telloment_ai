@@ -12,7 +12,7 @@ class BERTClassifier(nn.Module):
                  bert,
                  hidden_size=768,
                  num_classes=4,  ##클래스 수 조정##
-                 dr_rate=None,
+                 dr_rate=.5,
                  params=None):
         super(BERTClassifier, self).__init__()
         self.bert = bert
