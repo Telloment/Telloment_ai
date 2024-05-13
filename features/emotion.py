@@ -1,5 +1,5 @@
 from init_vars import tokenizer, model, vocab, torch_device
-from transformers import BertModel
+from transformers import BertModel, AutoModel
 from models.BERTDataset import BERTDataset
 from torch.utils.data import DataLoader
 import numpy as np
@@ -42,9 +42,11 @@ max_len = 64
 batch_size = 64
 
 
-def _get_classifier() -> BertModel:
-    model = torch.load('resources/model/telloment_senti_10.pth')
-    model.to(torch_device)
+def _get_classifier():
+    model = AutoModel.from_pretrained('skt/kobert-base-v1')
+    model = BERTClassifier(model)
+    params = torch.load('resources/model/telloment_senti_10_train.pth', map_location=torch_device)
+    model.load_state_dict(params['model_state_dict'])
     return model
 
 
