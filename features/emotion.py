@@ -1,4 +1,4 @@
-from init_vars import tokenizer, model, vocab, device
+from init_vars import tokenizer, model, vocab, torch_device
 from transformers import BertModel
 from models.BERTDataset import BERTDataset
 from torch.utils.data import DataLoader
@@ -12,7 +12,7 @@ batch_size = 64
 
 def _get_classifier() -> BertModel:
     model = torch.load('resources/model/telloment_senti_10.pth')
-    model.to(device)
+    model.to(torch_device)
     return model
 
 
@@ -30,8 +30,8 @@ def _predict(predict_sentence):
 
     for batch_id, (token_ids, valid_length, segment_ids, label) in enumerate(test_dataloader):
 
-        token_ids = token_ids.long().to(device)
-        segment_ids = segment_ids.long().to(device)
+        token_ids = token_ids.long().to(torch_device)
+        segment_ids = segment_ids.long().to(torch_device)
         valid_length = valid_length
         out = classifier(token_ids, valid_length, segment_ids)
         test_eval = []
