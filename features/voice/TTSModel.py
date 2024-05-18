@@ -1,21 +1,35 @@
-from transformers import AutoTokenizer
-import torch
-import scipy
-from transformers import pipeline
-from datasets import load_dataset
-import soundfile as sf
+import requests
+import env_vars
+import os
 
-# model = VitsModel.from_pretrained("facebook/mms-tts-kor")
-tokenizer = AutoTokenizer.from_pretrained("facebook/mms-tts-kor")
-synthesiser = pipeline("text-to-speech", "microsoft/speecht5_tts")
-embeddings_dataset = load_dataset("Matthijs/cmu-arctic-xvectors", split="validation")
-speaker_embedding = torch.tensor(embeddings_dataset[7306]["xvector"]).unsqueeze(0)
+url = 'https://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts'
 
 
-def TTS(text: str, save_path: str):
-    pass
+def tts(text: str, filename: str):
+    headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-NCP-APIGW-API-KEY-ID': client_id,
+        'X-NCP-APIGW-API-KEY': client_secret
+    }
+
+    data = {
+        'speaker': 'nara',
+        'speed': '0',
+        'text': text,
+        'volume': '0',
+        'pitch': '0',
+        'format': 'wav'
+    }
+
+    response = requests.post(url, headers=headers, data=data)
+    save_wav(response.content, filename)
 
 
-def TTS_speecht5(text: str, save_path: str):
-    speech = synthesiser(text, forward_params={"speaker_embeddings": speaker_embedding})
-    sf.write(save_path, speech["audio"], samplerate=speech["sampling_rate"])
+def save_wav(audio, path):
+    if not path.endswith('.wav'):
+        path += '.wav'
+
+    with open(path, 'wb') as f:
+        f.write(audio)
+
+    return audio
