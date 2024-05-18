@@ -1,6 +1,7 @@
 import requests
 import env_vars
 import os
+from init_vars import configs
 
 url = 'https://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts'
 
@@ -8,8 +9,8 @@ url = 'https://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts'
 def tts(text: str, filename: str):
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'X-NCP-APIGW-API-KEY-ID': client_id,
-        'X-NCP-APIGW-API-KEY': client_secret
+        'X-NCP-APIGW-API-KEY-ID': configs.clova_id,
+        'X-NCP-APIGW-API-KEY': configs.clova_secret
     }
 
     data = {
