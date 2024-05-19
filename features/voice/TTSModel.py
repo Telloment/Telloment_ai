@@ -1,5 +1,5 @@
 import requests
-import env_vars
+from features.voice import env_vars
 import os
 from init_vars import configs
 
