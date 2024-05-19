@@ -1,7 +1,7 @@
 from fastapi import APIRouter, BackgroundTasks
 import features.voice.clone_voice as Clone
 import features.voice.text_to_speech as TTS
-from fastapi import UploadFile, File
+from fastapi import UploadFile, File, FileResponse
 import os
 
 router = APIRouter(prefix="/voice")
