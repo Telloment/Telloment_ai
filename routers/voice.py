@@ -27,7 +27,7 @@ async def clone_voice(user_id: str, background_tasks: BackgroundTasks, audio_fil
     }
 
 
-@router.get('/{user_id}/speech', tags=["voice"], response_class=FileResponse)
-async def text_to_speech(user_id: str, text: str):
-    TTS.text_to_speech(user_id, text)
-    return {"message": "text to speech success"}
+@router.get('/{user_id}/speech', tags=["voice"])
+async def text_to_speech(user_id: str, text: str) -> FileResponse:
+    path = TTS.text_to_speech(user_id, text)
+    return FileResponse(path, media_type='audio/wav', filename='output.wav')

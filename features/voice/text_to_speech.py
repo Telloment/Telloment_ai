@@ -7,7 +7,7 @@ from features.voice import TTSModel
 from fastapi import File
 
 
-def text_to_speech(user_id: str, text: str) -> File:
+def text_to_speech(user_id: str, text: str) -> str:
     if not os.path.exists(env_vars.output_dir):
         os.makedirs(env_vars.output_dir, exist_ok=True)
 
@@ -15,8 +15,14 @@ def text_to_speech(user_id: str, text: str) -> File:
 
     # Convert the hash value to base64 and make file name possible
     src_path = f'{env_vars.output_dir}/tmp.wav'
-    save_path = f'{env_vars.output_dir}/output_v2_kr.wav'
-
+    # apply hash function to user_id && text
+    h = hashlib.sha256()
+    h.update(user_id.encode())
+    h.update(text.encode())
+    h_value = h.digest()
+    h_value = h_value[:16].replace('/', '_^')
+    save_path = f'{env_vars.output_dir}/output_v2_{h_value}.wav'
+    print(f"save_path: {save_path}")
     TTSModel.tts(text, src_path)
 
     encode_message = "@MyShell"
@@ -27,5 +33,5 @@ def text_to_speech(user_id: str, text: str) -> File:
         output_path=save_path,
         message=encode_message)
 
-    f: File = open(save_path, 'rb')
-    return f
+    print(f"Text to speech done")
+    return save_path

@@ -23,4 +23,5 @@ def clone_voice(user_id: str, audio_path: str):
         (se, name) = se_extractor.get_se(audio_path, converter, target_dir=f'resources/{user_id}', vad=False)
     else:
         (se, name) = se_extractor.get_se(audio_path, env_vars.tone_color_converter, target_dir=f'resources/{user_id}', vad=False)
+    print(f"SE extracted from {name}")
     return se, name
