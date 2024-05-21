@@ -11,7 +11,7 @@ from fastapi import File
 def _hash_numpy_array(key: str) -> str:
     # Convert the array to bytes
     array_bytes = bytearray()
-    array_bytes.extend(key)
+    array_bytes.extend(map(ord, key))
     # Calculate the hash of the array bytes
     hash_object = hashlib.sha256(array_bytes)
     hash_value = hash_object.digest()
