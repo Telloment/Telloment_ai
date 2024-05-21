@@ -8,6 +8,17 @@ from features.voice import TTSModel
 from fastapi import File
 
 
+def _hash_numpy_array(key: str) -> str:
+    # Convert the array to bytes
+    array_bytes = key.tobytes()
+    # Calculate the hash of the array bytes
+    hash_object = hashlib.sha256(array_bytes)
+    hash_value = hash_object.digest()
+    # Convert the hash value to base64
+    base64_value = base64.b64encode(hash_value)
+    return base64_value.decode('utf-8')[:16].replace('/', '_^')
+
+
 def text_to_speech(user_id: str, text: str) -> str:
     if not os.path.exists(env_vars.output_dir):
         os.makedirs(env_vars.output_dir, exist_ok=True)
@@ -17,11 +28,7 @@ def text_to_speech(user_id: str, text: str) -> str:
     # Convert the hash value to base64 and make file name possible
     src_path = f'{env_vars.output_dir}/tmp.wav'
     # apply hash function to user_id && text
-    h = hashlib.sha256()
-    h.update(user_id.encode())
-    h.update(text.encode())
-    h_value = h.digest()
-    h_value = h_value[:16].replace('/', '_^')
+    h_value = _hash_numpy_array(f'{user_id}_{text}')
     save_path = f'{env_vars.output_dir}/output_v2_{h_value}.wav'
     print(f"save_path: {save_path}")
     TTSModel.tts(text, src_path)
