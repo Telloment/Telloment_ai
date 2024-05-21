@@ -2,6 +2,7 @@ import os
 
 import torch
 import hashlib
+import base64
 
 from features.voice import env_vars
 from features.voice import TTSModel
