@@ -24,7 +24,6 @@ async def clone_voice(user_id: str, background_tasks: BackgroundTasks, audio_fil
     background_tasks.add_task(Clone.clone_voice, user_id=user_id, audio_path=f"{audio_path}/{audio_name}")
     return {
         "result": "accepted"
-        , "key": key
     }
 
 
