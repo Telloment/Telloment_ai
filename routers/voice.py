@@ -17,8 +17,8 @@ async def voice():
 async def clone_voice(user_id: str, background_tasks: BackgroundTasks, audio_file: UploadFile = File(...)):
     audio_path = f"resources/{user_id}"
     audio_name = "voice_rec.wav"
-    os.makedirs(path, exist_ok=True)
-    with open(audio_path, "wb") as audio:
+    os.makedirs(f"{audio_path}", exist_ok=True)
+    with open(f"{audio_path}/{audio_name}", "wb") as audio:
         audio.write(audio_file.file.read())
 
     background_tasks.add_task(Clone.clone_voice, user_id=user_id, audio_path=f"{audio_path}/{audio_name}")
