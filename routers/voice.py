@@ -1,9 +1,10 @@
-from fastapi import APIRouter, BackgroundTasks
+from fastapi import APIRouter, BackgroundTasks, HTTPException
 import features.voice.clone_voice as Clone
 import features.voice.text_to_speech as TTS
 from fastapi import UploadFile, File
 from fastapi.responses import FileResponse
 import os
+from features.checker import is_wav
 
 router = APIRouter(prefix="/voice")
 
@@ -15,6 +16,9 @@ async def voice():
 
 @router.post('/{user_id}', tags=["voice"], status_code=202)
 async def clone_voice(user_id: str, background_tasks: BackgroundTasks, audio_file: UploadFile = File(...)):
+    if not is_wav(audio_file.file.read()):
+        raise HTTPException(status_code=400, detail="Not a wav format ")
+
     audio_path = f"resources/{user_id}"
     audio_name = "voice_rec.wav"
     os.makedirs(f"{audio_path}", exist_ok=True)
