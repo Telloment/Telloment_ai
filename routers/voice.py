@@ -5,14 +5,17 @@ from fastapi import UploadFile, File
 from fastapi.responses import FileResponse
 import os
 from features.checker import is_wav
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/voice")
 
 
-@router.get('/', tags=["voice"])
-async def voice():
-    return {"message": "Voice API"}
-
+# @router.get('/', tags=["voice"])
+# async def voice():
+#     return {"message": "Voice API"}
+class CloneRequest(BaseModel):
+    emotion: str
+    strength: int
 
 @router.post('/{user_id}', tags=["voice"], status_code=202)
 async def clone_voice(user_id: str, background_tasks: BackgroundTasks, audio_file: UploadFile = File(...)):

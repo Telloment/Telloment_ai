@@ -9,7 +9,7 @@ path = "/emotion"
 async def get_emotion(text: str):
     (emo, n) = emotion.get_emotion(text)
     return {
-        "emotion": emo,
+        "emotion": emo.description,
         "score": n,
     }
 

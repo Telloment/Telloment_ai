@@ -5,6 +5,7 @@ from torch.utils.data import DataLoader
 import numpy as np
 import torch
 from torch import nn
+from models.Emotions import Emotions
 
 
 class BERTClassifier(nn.Module):
@@ -37,6 +38,7 @@ class BERTClassifier(nn.Module):
             out = self.dropout(pooler)
         return self.classifier(out)
 
+
 tok = tokenizer.tokenize
 max_len = 64
 batch_size = 64
@@ -53,7 +55,7 @@ def _get_classifier():
 classifier = _get_classifier()
 
 
-def _predict(predict_sentence):
+def _predict(predict_sentence) -> (Emotions, float):
     data = [predict_sentence, '0']
     dataset_another = [data]
 
@@ -61,32 +63,43 @@ def _predict(predict_sentence):
     test_dataloader = DataLoader(another_test, batch_size=batch_size, num_workers=5)
 
     classifier.eval()
-
+    res_emo: Emotions = Emotions.NEUTRAL
+    res_score: float = 0.0
     for batch_id, (token_ids, valid_length, segment_ids, label) in enumerate(test_dataloader):
 
         token_ids = token_ids.long().to(torch_device)
         segment_ids = segment_ids.long().to(torch_device)
         valid_length = valid_length
         out = classifier(token_ids, valid_length, segment_ids)
-        test_eval = []
-        print(out)
         for i in out:
             logits = i
             logits = logits.detach().cpu().numpy()
-            print(logits)
             if np.argmax(logits) == 0:  # 분
-                test_eval.append("분노")
+                res_emo = Emotions.ANGRY
+                res_score = logits[0]
             elif np.argmax(logits) == 1:
-                test_eval.append("슬픔")  # 슬
+                res_emo = Emotions.SAD
+                res_score = logits[1]
             elif np.argmax(logits) == 2:
-                test_eval.append("행복")  # 행
+                res_emo = Emotions.HAPPY
+                res_score = logits[2]
             elif np.argmax(logits) == 3:
-                test_eval.append("중립")  # 중립이
+                res_emo = Emotions.NEUTRAL
+                res_score = logits[3]
 
-        return test_eval
+        return res_emo, res_score
 
 
-def get_emotion(text: str) -> (str, int):
+def _convert_score_to_phases(score: float) -> int:
+    if score < 0.3:
+        return 0
+    elif score < 0.6:
+        return 1
+    else:
+        return 2
+
+
+def get_emotion(text: str) -> (Emotions, int):
     pred = _predict(text)
-    return pred[0], 0
-
+    p = _convert_score_to_phases(pred[1])
+    return pred[0], p
