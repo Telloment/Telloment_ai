@@ -23,7 +23,7 @@ async def clone_voice(user_id: str, background_tasks: BackgroundTasks, audio_fil
         raise HTTPException(status_code=400, detail="Not a wav format ")
 
     audio_path = f"resources/{user_id}"
-    audio_name = "voice_rec.wav"
+    audio_name = "temp.wav"
     os.makedirs(f"{audio_path}", exist_ok=True)
     with open(f"{audio_path}/{audio_name}", "wb") as audio:
         audio.write(audio_file.file.read())
