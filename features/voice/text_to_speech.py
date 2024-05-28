@@ -7,7 +7,7 @@ import base64
 from features.voice import env_vars
 from features.voice import TTSModel
 from fastapi import File
-
+from models.Emotions import Emotions
 
 def _hash_numpy_array(key: str) -> str:
     # Convert the array to bytes
@@ -20,7 +20,7 @@ def _hash_numpy_array(key: str) -> str:
     return base64_value.decode('utf-8')[:16].replace('/', '_^')
 
 
-def text_to_speech(user_id: str, text: str) -> str:
+def text_to_speech(user_id: str, text: str, emotion: str, strength: int) -> str:
     if not os.path.exists(env_vars.output_dir):
         os.makedirs(env_vars.output_dir, exist_ok=True)
 
@@ -32,7 +32,8 @@ def text_to_speech(user_id: str, text: str) -> str:
     h_value = _hash_numpy_array(f'{user_id}_{text}')
     save_path = f'{env_vars.output_dir}/output_v2_{h_value}.wav'
     print(f"save_path: {save_path}")
-    TTSModel.tts(text, src_path)
+    emo = Emotions.from_description()
+    TTSModel.tts(text, src_path, emo.num, strength=strength)
 
     encode_message = "@MyShell"
     env_vars.tone_color_converter.convert(

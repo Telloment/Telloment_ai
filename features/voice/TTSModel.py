@@ -6,7 +6,7 @@ from init_vars import configs
 url = 'https://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts'
 
 
-def tts(text: str, filename: str):
+def tts(text: str, filename: str, emotion: int, strength: int):
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
         'X-NCP-APIGW-API-KEY-ID': configs.clova_id,
@@ -14,12 +14,14 @@ def tts(text: str, filename: str):
     }
 
     data = {
-        'speaker': 'nara',
+        'speaker': 'vara',
         'speed': '0',
         'text': text,
         'volume': '0',
         'pitch': '0',
-        'format': 'wav'
+        'format': 'wav',
+        'emotion': emotion,
+        'emotion_strength': strength,
     }
 
     response = requests.post(url, headers=headers, data=data)

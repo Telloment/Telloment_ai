@@ -17,6 +17,7 @@ class CloneRequest(BaseModel):
     emotion: str
     strength: int
 
+
 @router.post('/{user_id}', tags=["voice"], status_code=202)
 async def clone_voice(user_id: str, background_tasks: BackgroundTasks, audio_file: UploadFile = File(...)):
     if not is_wav(audio_file.file.read()):
@@ -35,6 +36,6 @@ async def clone_voice(user_id: str, background_tasks: BackgroundTasks, audio_fil
 
 
 @router.get('/{user_id}/speech', tags=["voice"])
-async def text_to_speech(user_id: str, text: str) -> FileResponse:
-    path = TTS.text_to_speech(user_id, text)
+async def text_to_speech(user_id: str, text: str, emotion: str, strength: int) -> FileResponse:
+    path = TTS.text_to_speech(user_id, text, emotion, strength)
     return FileResponse(path, media_type='audio/wav', filename='output.wav')
