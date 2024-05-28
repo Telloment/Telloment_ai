@@ -32,7 +32,7 @@ def text_to_speech(user_id: str, text: str, emotion: str, strength: int) -> str:
     h_value = _hash_numpy_array(f'{user_id}_{text}')
     save_path = f'{env_vars.output_dir}/output_v2_{h_value}.wav'
     print(f"save_path: {save_path}")
-    emo = Emotions.from_description()
+    emo = Emotions.from_description(emotion)
     TTSModel.tts(text, src_path, emo.num, strength=strength)
 
     encode_message = "@MyShell"
