@@ -4,7 +4,6 @@ import features.voice.text_to_speech as TTS
 from fastapi import UploadFile, File
 from fastapi.responses import FileResponse
 import os
-from features.checker import is_wav
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/voice")
@@ -20,9 +19,6 @@ class CloneRequest(BaseModel):
 
 @router.post('/{user_id}', tags=["voice"], status_code=202)
 async def clone_voice(user_id: str, background_tasks: BackgroundTasks, audio_file: UploadFile = File(...)):
-    if not is_wav(audio_file.file.read()):
-        raise HTTPException(status_code=400, detail="Not a wav format ")
-
     audio_path = f"resources/{user_id}"
     audio_name = "temp.wav"
     os.makedirs(f"{audio_path}", exist_ok=True)
