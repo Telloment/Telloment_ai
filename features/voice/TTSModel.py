@@ -1,4 +1,5 @@
 import requests
+from fastapi import HTTPException
 from features.voice import env_vars
 import os
 from init_vars import configs
@@ -25,7 +26,13 @@ def tts(text: str, filename: str, emotion: int, strength: int):
     }
 
     response = requests.post(url, headers=headers, data=data)
-    save_wav(response.content, filename)
+    if 200 <= response.status_code < 300:
+        save_wav(response.content, filename)
+    else :
+        raise HTTPException(
+            status_code=400,
+            detail="parameter가 잘못되었습니ㄷ"
+        )
 
 
 def save_wav(audio, path):

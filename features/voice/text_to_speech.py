@@ -33,7 +33,7 @@ def text_to_speech(user_id: str, text: str, emotion: str, strength: int) -> str:
     save_path = f'{env_vars.output_dir}/output_v2_{h_value}.wav'
     print(f"save_path: {save_path}")
     emo = Emotions.from_description(emotion)
-    TTSModel.tts(text, src_path, emo.num, strength=strength)
+    TTSModel.tts(text, src_path, emo.clova_code, strength=strength)
 
     encode_message = "@MyShell"
     env_vars.tone_color_converter.convert(
