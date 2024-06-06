@@ -16,10 +16,11 @@ def tts(text: str, filename: str, emotion: int, strength: int):
 
     data = {
         'speaker': 'vara',
-        'speed': '1',
+        'speed': '2',
         'text': text,
         'volume': '0',
         'pitch': '0',
+        'alpha': '4',
         'format': 'wav',
         'emotion': emotion,
         'emotion_strength': strength,
