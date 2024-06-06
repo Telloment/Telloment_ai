@@ -20,7 +20,7 @@ def tts(text: str, filename: str, emotion: int, strength: int):
         'text': text,
         'volume': '0',
         'pitch': '0',
-        'alpha': '4',
+        'alpha': '2',
         'format': 'wav',
         'emotion': emotion,
         'emotion_strength': strength,
